@@ -87,10 +87,12 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                build job: "catalogue-deploy", wait: true, parameters:[
-                    string(name: 'version',value: "${pscksgeVersion}")
-                    booleanParam(name: 'environmant',value: 'dev')
+                def parms = [
+                    string(name: 'version',value: "$pscksgeVersion")
+                    string(name: 'environmant',value: 'dev')
                 ]
+                build job: "catalogue-deploy", wait: true, params
+            
             }
         }
     }
