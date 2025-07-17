@@ -12,20 +12,33 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
     }
-    // parameters {
-    //     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
 
-    //     text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-
-    //     booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-
-    //     choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
-
-    //     password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
-    // }
-
-    // build
     stages {
+        stage('Setup Node.js') {
+            steps {
+                script {
+                    // Check if Node.js is already installed
+                    def nodeCheck = sh(script: 'command -v node || true', returnStdout: true).trim()
+                    def npmCheck = sh(script: 'command -v npm || true', returnStdout: true).trim()
+                    
+                    if (!nodeCheck || !npmCheck) {
+                        echo 'Installing Node.js and npm...'
+                        // For CentOS/RHEL (assuming AGENT-1 is CentOS based on your path)
+                        sh '''
+                            curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
+                            sudo yum install -y nodejs
+                            echo "Node.js version: $(node --version)"
+                            echo "npm version: $(npm --version)"
+                        '''
+                    } else {
+                        echo 'Node.js and npm are already installed'
+                        sh 'node --version'
+                        sh 'npm --version'
+                    }
+                }
+            }
+        }
+
         stage('Get the version') {
             steps {
                 script {
@@ -35,11 +48,10 @@ pipeline {
                 }
             }
         }
+
         stage('Install dependencies') {
             steps {
-                sh """
-                    npm install
-                """
+                sh 'npm install'
             }
         }
 
@@ -55,7 +67,7 @@ pipeline {
 
         stage('Publish Artifact') {
             steps {
-                 nexusArtifactUploader(
+                nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
                     nexusUrl: "${nexusURL}",
@@ -68,22 +80,18 @@ pipeline {
                         classifier: '',
                         file: 'catalogue.zip',
                         type: 'zip']
-        ]
-     )
+                    ]
+                )
             }
         }
 
         stage('Deploy') {
             steps {
-                sh """
-                    echo "Here I wrote shell script"
-                """
+                sh 'echo "Here I wrote shell script"'
             }
         }
-        
     }
 
-    // post build
     post { 
         always { 
             echo 'I will always say Hello again!'
