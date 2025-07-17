@@ -87,7 +87,10 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'echo "Here I wrote shell script"'
+                build job: "catalogue-deploy", wait: true, parameters:[
+                    string(name: 'version',value: "${pscksgeVersion}")
+                    booleanParam(name: 'environmant',value: 'dev')
+                ]
             }
         }
     }
