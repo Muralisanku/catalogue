@@ -89,7 +89,7 @@ pipeline {
             steps {
                 def parms = [
                     string(name: 'version',value: "$pscksgeVersion")
-                    string(name: 'environmant',value: 'dev')
+                    
                 ]
                 build job: "catalogue-deploy", wait: true, params
             
