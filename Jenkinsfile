@@ -55,6 +55,22 @@ pipeline {
             }
         }
 
+        stage('Unit tests') {
+            steps {
+                sh """
+                    echo "unit tests will run here"
+                """
+            }
+        }
+
+        stage('Sonar scan') {
+            steps{
+                sh """
+                    sonar-scanner
+                """
+            }
+        }
+
         stage('Build') {
             steps {
                 sh """
@@ -87,11 +103,12 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                def parms = [
-                    string(name: 'version',value: "$pscksgeVersion")
-                    
+                script {
+                    def parms = [
+                        string(name: 'version',value: "$pscksgeVersion")
+                        string(name: 'environmant',value: 'dev')
                 ]
-                build job: "catalogue-deploy", wait: true, params
+                build job: "catalogue-deploy", wait: true, parameters: parms
             
             }
         }
