@@ -119,6 +119,7 @@ pipeline {
                     params.Deploy = true
                 }         
             }
+        }
             steps {
                 script {
                     def parms = [
