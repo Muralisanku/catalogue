@@ -115,13 +115,15 @@ pipeline {
 
         stage('Deploy') {
             when {
-                parms.Deploy = true
+                expression{
+                    parms.Deploy = true
+                }         
             }
             steps {
                 script {
                     def parms = [
                         string(name: 'version',value: "$pscksgeVersion")
-                        string(name: 'environment',defaultValue: 'dev')
+                        string(name: 'environment', value: 'dev')
                 ]
                 build job: "catalogue-deploy", wait: true, parameters: parms
             
