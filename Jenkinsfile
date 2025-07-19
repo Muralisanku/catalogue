@@ -121,7 +121,7 @@ pipeline {
                 script {
                     def parms = [
                         string(name: 'version',value: "$pscksgeVersion")
-                        string(name: 'environmant',value: 'dev')
+                        string(name: 'environment',value: 'dev')
                 ]
                 build job: "catalogue-deploy", wait: true, parameters: parms
             
