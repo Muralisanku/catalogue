@@ -123,7 +123,7 @@ pipeline {
             steps {
                 script {
                     def parms = [
-                        string(name: 'version',value: "$packageVersion"),
+                        string(name: 'version', value: "$packageVersion"),
                         string(name: 'environment', value: 'dev')
                 ]
                 build job: "catalogue-deploy", wait: true, parameters: parms
