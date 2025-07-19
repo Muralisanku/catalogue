@@ -115,19 +115,18 @@ pipeline {
 
         stage('Deploy') {
             when {
-                expression{
-                    params.Deploy = true
+                expression {
+                    params.Deploy == true  // Fixed: Changed = to == for comparison
                 }         
             }
-        }
             steps {
                 script {
-                    def parms = [
-                        string(name: 'version', value: "$packageVersion"),
+                    def deployParams = [
+                        string(name: 'version', value: "${packageVersion}"),
                         string(name: 'environment', value: 'dev')
-                ]
-                build job: "catalogue-deploy", wait: true, parameters: parms
-            
+                    ]
+                    build job: "catalogue-deploy", wait: true, parameters: Params
+                }
             }
         }
     }
